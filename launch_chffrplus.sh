@@ -113,6 +113,7 @@ function two_init {
       rm -f /persist/sensors/sensors_settings /persist/sensors/error_log /persist/sensors/gyro_sensitity_cal &&
       echo "restart" > /sys/kernel/debug/msm_subsys/slpi &&
       sleep 5  # Give Android sensor subsystem a moment to recover
+      reboot   # screen touch issue neos install and first boot
   fi
 }
 
