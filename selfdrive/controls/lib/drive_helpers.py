@@ -755,7 +755,7 @@ class VCruiseHelper:
       gas_tok = True if 0 < self.gas_pressed_count < 0.4 / DT_CTRL else False  ## gas_tok: 0.4 seconds
       self.gas_pressed_count = min(-1, self.gas_pressed_count - 1)
       if self.gas_pressed_count < -1:
-        self.gas_pressed_max = 0
+        self.gas_pressed_max_aego = 0
         self.gas_pressed_count_prev = 0
 
     if controls.enabled or CS.brakePressed or CS.gasPressed:
