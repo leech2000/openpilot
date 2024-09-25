@@ -166,7 +166,7 @@ class NaviServer:
       if ret:
         data, self.remote_addr = sock.recvfrom(2048)
         json_obj = json.loads(data.decode())
-
+        print('udp_recv=', json_obj)
         if 'cmd' in json_obj:
           try:
             os.system(json_obj['cmd'])
@@ -278,7 +278,7 @@ def navi_gps_thread():
         dat.naviGps.longitude = floats[1]
         dat.naviGps.heading = floats[2]
         dat.naviGps.speed = floats[3]
-        #print('navi_gps_thread=', dat.naviGps)
+        print('navi_gps_thread=', dat.naviGps)
         naviGps.send(dat.to_bytes())
       except:
         pass
@@ -341,9 +341,9 @@ def publish_thread(server):
     navi.ts = ts
         
     if navi.active:
-      #print(dat.naviData.active)
-      #print('naviData.road_limit_speed=', dat.naviData.roadLimitSpeed)
-      #print(dat.naviData)
+      print(dat.naviData.active)
+      print('naviData.road_limit_speed=', dat.naviData.roadLimitSpeed)
+      print(dat.naviData)
       pass
 
     if sm.updated['carState']:
