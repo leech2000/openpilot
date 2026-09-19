@@ -11,6 +11,7 @@ from openpilot.selfdrive.controls.lib.drive_helpers import CONTROL_N
 from opendbc.car.interfaces import LatControlInputs
 from opendbc.car.vehicle_model import ACCELERATION_DUE_TO_GRAVITY
 from openpilot.selfdrive.controls.lib.latcontrol import LatControl
+from openpilot.selfdrive.controls.lib.driver_unwind import DriverUnwind
 from openpilot.common.pid import PIDController
 
 from openpilot.common.params import Params
@@ -78,6 +79,10 @@ class LatControlTorque(LatControl):
     # carrot
     self.frame = 0
     self.params = Params()
+    # Read at process start. Scope the opt-in experiment to the logged platform.
+    self.driver_unwind_enabled = (CP.carFingerprint == "HYUNDAI_KONA_HEV"
+                                 and self.params.get_bool("KonaDriverUnwindExperimental"))
+    self.driver_unwind = DriverUnwind()
     self.lateralTorqueCustom = self.params.get_int("LateralTorqueCustom")
     self.latAccelFactor_default = self.torque_params.latAccelFactor
     self.latAccelOffset_default = self.torque_params.latAccelOffset
@@ -285,11 +290,15 @@ class LatControlTorque(LatControl):
                                             friction_input, lateral_accel_deadzone, friction_compensation=True,
                                             gravity_adjusted=True)
 
-      freeze_integrator = steer_limited_by_controls or CS.steeringPressed or CS.vEgo < 5
+      freeze_integrator = steer_limited_by_controls or CS.steeringPressed or CS.vEgo < 5 or self.driver_unwind.engaged
       output_torque = self.pid.update(pid_log.error,
                                       feedforward=ff,
                                       speed=CS.vEgo,
                                       freeze_integrator=freeze_integrator)
+
+      output_torque = -self.driver_unwind.update(
+        -output_torque, CS.steeringTorque, CS.steeringPressed,
+        active=active, enabled=self.driver_unwind_enabled)
 
       pid_log.active = True
       pid_log.p = float(self.pid.p)
@@ -303,5 +312,7 @@ class LatControlTorque(LatControl):
       #if nn_log is not None:
       #  pid_log.nnLog = nn_log
 
+    if not active:
+      self.driver_unwind.reset()
     # TODO left is positive in this convention
     return -output_torque,angle_steers_des, pid_log

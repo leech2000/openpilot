@@ -134,6 +134,7 @@
                 "SteerActuatorDelay",
                 "LatSmoothSec",
                 "LatSuspendAngleDeg",
+                "KonaDriverUnwindExperimental",
                 "CustomSR",
                 "SteerRatioRate"
               ]
@@ -1004,6 +1005,22 @@
       "max": 300,
       "default": 300,
       "unit": 10
+    },
+    {
+      "group": "조향튜닝",
+      "name": "KonaDriverUnwindExperimental",
+      "title": "코나 운전자 보정 우선 (실험)",
+      "descr": "코나 HEV 전용, 기본 꺼짐. 반대 방향 운전자 보정이 0.05초 지속되면 이를 방해하는 조향 요청을 제한합니다. 보정 종료 후 0.30초 유지하고 0.50초 동안 제한을 해제합니다. 재시작 필요. 실차 미검증이며 커브 탈출 경로 자체를 수정하지 않습니다.",
+      "egroup": "LAT",
+      "etitle": "Kona Driver Correction Priority (Experimental)",
+      "edescr": "Kona HEV only, off by default. After 0.05 s of opposing driver correction, limit torque requests resisting it. Hold for 0.30 s after release, then restore the allowance over 0.50 s. Restart required. Not vehicle-validated; does not change the curve-exit path.",
+      "cgroup": "转向",
+      "ctitle": "Kona 驾驶员修正优先（实验）",
+      "cdescr": "仅适用于 Kona HEV，默认关闭。反向驾驶员修正持续 0.05 秒后限制抵抗修正的转向请求。松手后保持 0.30 秒，再于 0.50 秒内恢复。需要重启。尚未经过实车验证，不改变弯道出口路径。",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "unit": 1
     },
     {
       "group": "크루즈",
