@@ -1,5 +1,0 @@
-Import('envCython')
-
-native_env = envCython.Clone()
-native_env.Append(CCFLAGS=['-fno-fast-math', '-ffp-contract=off'])
-native_env.Program('_can_native.so', '_can_native.pyx')
